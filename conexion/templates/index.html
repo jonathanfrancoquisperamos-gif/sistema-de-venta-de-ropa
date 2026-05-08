@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="header-section">
+    <h1>Nueva Colección</h1>
+    <p class="subtitle">Descubre el diseño minimalista que marca la diferencia.</p>
+</div>
+
+{% if error %}
+    <div class="alert error">
+        <strong>Error:</strong> {{ error }}
+    </div>
+{% endif %}
+
+<div class="products-grid">
+    {% for p in productos %}
+        <div class="product-card">
+            <div class="product-img-placeholder">
+                <!-- Espacio para la foto -->
+                <span>Ver Prenda</span>
+            </div>
+            <div class="product-info">
+                <p class="brand-text">{{ p.marca or 'Exclusivo' }}</p>
+                <h3 class="product-title">{{ p.nombre or 'Prenda de Diseño' }}</h3>
+                <p class="product-price">${{ p.preciobase or '0.00' }}</p>
+            </div>
+        </div>
+    {% else %}
+        {% if not error %}
+            <div class="empty-state">
+                <p>Aún no hay prendas en el catálogo.</p>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}
