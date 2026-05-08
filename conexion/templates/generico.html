@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block page_title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>{{ icon }} Gestión de {{ titulo }}</h1>
+    <p>Listado general de registros</p>
+  </div>
+</div>
+
+{% if form_fields %}
+<div class="card" style="margin-bottom: 2rem;">
+  <h3 style="margin-bottom: 1rem; font-size: 1rem; color: var(--text-primary);">＋ Nuevo Registro</h3>
+  <form method="POST">
+    <div class="form-grid" style="align-items: end;">
+      {% for field in form_fields %}
+        <div class="form-group">
+          <label class="form-label" for="{{ field.name }}">{{ field.label }}</label>
+          {% if field.type == 'select' %}
+            <select id="{{ field.name }}" name="{{ field.name }}" class="form-control" {% if field.required %}required{% endif %}>
+              <option value="">Seleccionar...</option>
+              {% for opt in field.options %}
+              <option value="{{ opt.id }}">{{ opt.nombre }}</option>
+              {% endfor %}
+            </select>
+          {% else %}
+            <input type="{{ field.type }}" id="{{ field.name }}" name="{{ field.name }}" class="form-control" {% if field.required %}required{% endif %}>
+          {% endif %}
+        </div>
+      {% endfor %}
+      <div class="form-group" style="grid-column: 1 / -1; margin-top: 0.5rem; text-align: right;">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+    </div>
+  </form>
+</div>
+{% endif %}
+
+<div class="table-container">
+  <div class="table-header">
+    <h3>Registros encontrados ({{ items|length }})</h3>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        {% for header in headers %}
+          {% if header %}<th>{{ header }}</th>{% endif %}
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td style="color:var(--accent-light);font-weight:600;">#{{ item.id }}</td>
+        <td style="color:var(--text-primary);font-weight:500;">{{ item.col1 }}</td>
+        <td>{{ item.col2 }}</td>
+        <td>{{ item.col3 }}</td>
+        {% if headers|length > 4 and headers[4] %}
+        <td>{{ item.col4 }}</td>
+        {% endif %}
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="{{ headers|length }}">
+          <div class="empty-state">
+            <div class="empty-icon">{{ icon }}</div>
+            <p>No hay registros disponibles.</p>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

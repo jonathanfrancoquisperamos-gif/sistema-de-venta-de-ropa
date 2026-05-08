@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Pedidos{% endblock %}
+{% block page_title %}Pedidos{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Pedidos y Ventas</h1>
+    <p>Historial completo de pedidos</p>
+  </div>
+  <a href="{{ url_for('nuevo_pedido') }}" class="btn btn-primary">＋ Nuevo Pedido</a>
+</div>
+
+<div class="table-container">
+  <div class="table-header">
+    <h3>🛍️ Pedidos registrados ({{ pedidos|length }})</h3>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Cliente</th>
+        <th>Vendedor</th>
+        <th>Fecha</th>
+        <th>Total</th>
+        <th>Estado</th>
+        <th>Cambiar Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in pedidos %}
+      <tr>
+        <td style="color:var(--accent-light);font-weight:600;">#{{ p.idpedido }}</td>
+        <td style="color:var(--text-primary);font-weight:500;">{{ p.cliente }}</td>
+        <td style="color:var(--text-muted);">{{ p.vendedor }}</td>
+        <td>{{ p.fechapedido }}</td>
+        <td style="font-weight:600;color:var(--success);">Bs. {{ "%.2f"|format(p.total) }}</td>
+        <td>
+          {% if p.estadopedido == 'Entregado' %}
+            <span class="badge badge-success">{{ p.estadopedido }}</span>
+          {% elif p.estadopedido == 'Pendiente' %}
+            <span class="badge badge-warning">{{ p.estadopedido }}</span>
+          {% else %}
+            <span class="badge badge-danger">{{ p.estadopedido }}</span>
+          {% endif %}
+        </td>
+        <td>
+          <form action="{{ url_for('cambiar_estado', id=p.idpedido) }}" method="POST"
+                style="display:flex;gap:0.4rem;align-items:center;">
+            <select name="estado" class="form-control" style="padding:0.35rem 0.6rem;font-size:0.78rem;width:auto;">
+              <option value="Pendiente"  {{ 'selected' if p.estadopedido=='Pendiente' }}>Pendiente</option>
+              <option value="Entregado"  {{ 'selected' if p.estadopedido=='Entregado' }}>Entregado</option>
+              <option value="Cancelado"  {{ 'selected' if p.estadopedido=='Cancelado' }}>Cancelado</option>
+            </select>
+            <button type="submit" class="btn btn-success btn-sm">✓</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="7">
+          <div class="empty-state">
+            <div class="empty-icon">🛍️</div>
+            <p>No hay pedidos registrados.</p>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

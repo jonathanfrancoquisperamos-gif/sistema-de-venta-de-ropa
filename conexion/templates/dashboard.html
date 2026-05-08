@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Resumen General</h1>
+    <p>Vista general del sistema de ventas</p>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid">
+  <div class="stat-card" style="--stat-color:#6366f1; --stat-bg:rgba(99,102,241,0.12);">
+    <div class="stat-icon">👕</div>
+    <div class="stat-info">
+      <div class="stat-label">Productos</div>
+      <div class="stat-value">{{ stats.get('productos', 0) }}</div>
+    </div>
+  </div>
+
+  <div class="stat-card" style="--stat-color:#10b981; --stat-bg:rgba(16,185,129,0.12);">
+    <div class="stat-icon">👥</div>
+    <div class="stat-info">
+      <div class="stat-label">Clientes</div>
+      <div class="stat-value">{{ stats.get('clientes', 0) }}</div>
+    </div>
+  </div>
+
+  <div class="stat-card" style="--stat-color:#f59e0b; --stat-bg:rgba(245,158,11,0.12);">
+    <div class="stat-icon">🛍️</div>
+    <div class="stat-info">
+      <div class="stat-label">Pedidos</div>
+      <div class="stat-value">{{ stats.get('pedidos', 0) }}</div>
+    </div>
+  </div>
+
+  <div class="stat-card" style="--stat-color:#3b82f6; --stat-bg:rgba(59,130,246,0.12);">
+    <div class="stat-icon">💰</div>
+    <div class="stat-info">
+      <div class="stat-label">Ingresos Totales</div>
+      <div class="stat-value">Bs. {{ "%.0f"|format(stats.get('ingresos', 0)) }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="dashboard-grid">
+
+  <!-- Últimos pedidos -->
+  <div class="table-container">
+    <div class="table-header">
+      <h3>🕐 Últimos Pedidos</h3>
+      <a href="{{ url_for('pedidos') }}" class="btn btn-secondary btn-sm">Ver todos</a>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Cliente</th>
+          <th>Fecha</th>
+          <th>Total</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in ventas_recientes %}
+        <tr>
+          <td><span style="color:var(--accent-light);font-weight:600;">#{{ p.idpedido }}</span></td>
+          <td style="color:var(--text-primary);font-weight:500;">{{ p.cliente }}</td>
+          <td>{{ p.fechapedido }}</td>
+          <td style="font-weight:600;">Bs. {{ "%.2f"|format(p.total) }}</td>
+          <td>
+            {% if p.estadopedido == 'Entregado' %}
+              <span class="badge badge-success">{{ p.estadopedido }}</span>
+            {% elif p.estadopedido == 'Pendiente' %}
+              <span class="badge badge-warning">{{ p.estadopedido }}</span>
+            {% else %}
+              <span class="badge badge-danger">{{ p.estadopedido }}</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="empty-state"><p>No hay pedidos aún.</p></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Top Productos -->
+  <div class="table-container">
+    <div class="table-header">
+      <h3>🏆 Más Vendidos</h3>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Imagen</th>
+          <th>Producto</th>
+          <th>Categoría</th>
+          <th>Vendidos</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in productos_top %}
+        <tr>
+          <td>
+            {% if p.imagen %}
+                <img src="{{ url_for('static', filename='uploads/productos/' + p.imagen) }}" alt="{{ p.nombre }}" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%;">
+            {% else %}
+                <div style="width: 30px; height: 30px; background: var(--bg-hover); display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--text-muted); font-size: 0.6rem;">N/A</div>
+            {% endif %}
+          </td>
+          <td style="color:var(--text-primary);font-weight:500;">{{ p.nombre }}</td>
+          <td><span class="badge badge-info">{{ p.categoria }}</span></td>
+          <td style="font-weight:600;color:var(--success);">{{ p.vendidos }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" class="empty-state"><p>Sin datos.</p></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+{% endblock %}

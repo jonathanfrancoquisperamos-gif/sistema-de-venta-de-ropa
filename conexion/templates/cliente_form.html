@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}{{ accion }} Cliente{% endblock %}
+{% block page_title %}{{ accion }} Cliente{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>{{ accion }} Cliente</h1>
+    <p>Datos personales del cliente</p>
+  </div>
+  <a href="{{ url_for('clientes') }}" class="btn btn-secondary">← Volver</a>
+</div>
+
+<div class="card" style="max-width:680px;">
+  <form method="POST">
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label class="form-label" for="nombre">Nombre *</label>
+        <input type="text" id="nombre" name="nombre" class="form-control"
+               placeholder="ej. María"
+               value="{{ cliente.nombre if cliente else '' }}" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="apellido">Apellido *</label>
+        <input type="text" id="apellido" name="apellido" class="form-control"
+               placeholder="ej. González"
+               value="{{ cliente.apellido if cliente else '' }}" required>
+      </div>
+
+      <div class="form-group span-2">
+        <label class="form-label" for="email">Email</label>
+        <input type="email" id="email" name="email" class="form-control"
+               placeholder="correo@ejemplo.com"
+               value="{{ cliente.email if cliente else '' }}">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="telefono">Teléfono</label>
+        <input type="text" id="telefono" name="telefono" class="form-control"
+               placeholder="ej. 78945612"
+               value="{{ cliente.telefono if cliente else '' }}">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="direccion">Dirección</label>
+        <input type="text" id="direccion" name="direccion" class="form-control"
+               placeholder="ej. Av. Arce 123, La Paz"
+               value="{{ cliente.direccion if cliente else '' }}">
+      </div>
+
+    </div>
+
+    <div style="display:flex;gap:1rem;margin-top:2rem;justify-content:flex-end;">
+      <a href="{{ url_for('clientes') }}" class="btn btn-secondary">Cancelar</a>
+      <button type="submit" class="btn btn-primary">
+        {% if accion == 'Nuevo' %}＋ Registrar Cliente{% else %}💾 Actualizar{% endif %}
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}

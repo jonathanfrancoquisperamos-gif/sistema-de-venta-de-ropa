@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Productos{% endblock %}
+{% block page_title %}Productos{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Catálogo de Productos</h1>
+    <p>Gestiona el inventario de prendas</p>
+  </div>
+  <a href="{{ url_for('nuevo_producto') }}" class="btn btn-primary">
+    ＋ Nuevo Producto
+  </a>
+</div>
+
+<div class="table-container">
+  <div class="table-header">
+    <h3>👕 Productos registrados ({{ productos|length }})</h3>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Imagen</th>
+        <th>Nombre</th>
+        <th>Categoría</th>
+        <th>Marca</th>
+        <th>Precio Base</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in productos %}
+      <tr>
+        <td style="color:var(--accent-light);font-weight:600;">#{{ p.idproducto }}</td>
+        <td>
+            {% if p.imagen %}
+                <img src="{{ url_for('static', filename='uploads/productos/' + p.imagen) }}" alt="{{ p.nombre }}" style="width: 40px; height: 40px; object-fit: cover; border-radius: var(--radius-sm);">
+            {% else %}
+                <div style="width: 40px; height: 40px; background: var(--bg-hover); display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm); color: var(--text-muted); font-size: 0.7rem;">N/A</div>
+            {% endif %}
+        </td>
+        <td style="color:var(--text-primary);font-weight:500;">{{ p.nombre }}</td>
+        <td><span class="badge badge-info">{{ p.categoria }}</span></td>
+        <td style="color:var(--text-secondary);">{{ p.marca }}</td>
+        <td style="font-weight:600;color:var(--success);">Bs. {{ "%.2f"|format(p.preciobase) }}</td>
+        <td>
+          <div style="display:flex;gap:0.5rem;">
+            <a href="{{ url_for('editar_producto', id=p.idproducto) }}" class="btn btn-secondary btn-sm">✏️ Editar</a>
+            <form action="{{ url_for('eliminar_producto', id=p.idproducto) }}" method="POST"
+                  onsubmit="return confirm('¿Eliminar este producto?')">
+              <button type="submit" class="btn btn-danger btn-sm">🗑️ Borrar</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="7">
+          <div class="empty-state">
+            <div class="empty-icon">👕</div>
+            <p>No hay productos registrados.</p>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
